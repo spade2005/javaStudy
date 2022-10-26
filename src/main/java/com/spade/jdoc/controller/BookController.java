@@ -60,7 +60,7 @@ public class BookController {
         book.setCreateAt(time);
         book.setUpdateAt(time);
         book.setDeleted(0);
-        if (book.getSortBy() <= 0) {
+        if (book.getSortBy() == null) {
             book.setSortBy(100);
         }
         book.setUserId(user.getId());
