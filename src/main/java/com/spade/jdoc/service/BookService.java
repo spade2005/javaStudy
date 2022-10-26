@@ -39,8 +39,8 @@ public class BookService {
         if (searchMessage.getSortData().size() > 0) {
             sb.append(" ORDER BY");
             for (Map.Entry entry : searchMessage.getSortData().entrySet()) {
-                sb.append(" " + entry.getKey());
-                sb.append(" " + entry.getValue());
+                sb.append(" ").append(entry.getKey())
+                        .append(" ").append(entry.getValue());
             }
         } else {
             sb.append(" ORDER BY id DESC");
