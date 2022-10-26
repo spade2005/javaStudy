@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BookService {
@@ -35,6 +36,16 @@ public class BookService {
         if (keyword != null && !keyword.isEmpty()) {
             sb.append(" AND u.name=:name");
         }
+        if (searchMessage.getSortData().size() > 0) {
+            sb.append(" ORDER BY");
+            for (Map.Entry entry : searchMessage.getSortData().entrySet()) {
+                sb.append(" " + entry.getKey());
+                sb.append(" " + entry.getValue());
+            }
+        } else {
+            sb.append(" ORDER BY id DESC");
+        }
+
         var qb = em.createQuery(sb.toString(), Book.class)
                 .setParameter("userId", searchMessage.getUser().getId())
                 .setMaxResults(searchMessage.getLength())
@@ -65,18 +76,22 @@ public class BookService {
         try {
             return qb.getSingleResult();
         } catch (Exception e) {
-            return Long.valueOf(0);
+            return 0L;
         }
     }
 
     @Transactional
     public Book createBook(Book book) {
-        em.persist(book);
-        em.flush();
-        return book;
+        return saveBook(book);
     }
+
     @Transactional
     public Book updateBook(Book book) {
+        return saveBook(book);
+    }
+
+    @Transactional
+    public Book saveBook(Book book) {
         em.persist(book);
         em.flush();
         return book;

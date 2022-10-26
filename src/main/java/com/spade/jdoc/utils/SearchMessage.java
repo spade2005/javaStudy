@@ -9,7 +9,7 @@ import java.util.Map;
 @Data
 public class SearchMessage {
 
-    private int id;
+//    private int id;
 
     private int start = 0;//起始
     private int length = 10;//长度
@@ -17,4 +17,6 @@ public class SearchMessage {
     private User user;
 
     private Map<String, String> data = Map.of("keyword", "");
+
+    private Map<String, String> sortData = Map.of("id", "DESC");
 }

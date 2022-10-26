@@ -14,7 +14,6 @@ public class Book implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer id;
 
     @Column(nullable = false, length = 100)

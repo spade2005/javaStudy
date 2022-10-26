@@ -1,7 +1,6 @@
 package com.spade.jdoc.filter;
 
 import com.spade.jdoc.model.User;
-import com.spade.jdoc.model.UserToken;
 import com.spade.jdoc.service.UserService;
 import com.spade.jdoc.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ public class UserFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse); // 让目标资源执行，放行
             return;
         }
-        String key = request.getHeader("token");
+        String key = request.getHeader("Authorization");
         if (key == null || key.isEmpty()) {
             key = request.getParameter("token");
         }
@@ -84,7 +83,11 @@ public class UserFilter implements Filter {
     }
 
     private User findUser(String key) {
-        var token = userService.findToken(key);
+        if (key==null || key.isEmpty() || !key.substring(0, 7).trim().equals("Bearer")) {
+            return null;
+        }
+        String tokenStr = key.substring(7);
+        var token = userService.findToken(tokenStr);
         if (token == null || token.getExpireAt() < System.currentTimeMillis() / 1000) {
             return null;
         }
@@ -92,7 +95,7 @@ public class UserFilter implements Filter {
         if (user == null || !user.getDeleted().equals(0) || !user.getStatus().equals(0)) {
             return null;
         }
-        System.out.println("user=" + user.toString());
+//        System.out.println("user=" + user.toString());
         return user;
     }
 }
