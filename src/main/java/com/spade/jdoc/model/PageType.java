@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Entity
@@ -40,4 +41,8 @@ public class PageType implements Serializable {
     private Long updateAt;
     @JsonIgnore
     private Integer deleted;
+
+    @Transient
+    private List<Page> listPage;
+
 }

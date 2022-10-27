@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Entity
@@ -29,6 +30,7 @@ public class Book implements Serializable {
     private Integer type;// 1 ,2 need pass
 
     @Column(nullable = false, length = 50)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String visitPass;
 
     @Column(nullable = false, name = "create_at")
@@ -40,4 +42,10 @@ public class Book implements Serializable {
     private Long updateAt;
     @JsonIgnore
     private Integer deleted;
+
+    @Transient
+    private List<PageType> pageTypes;
+
+    @Transient
+    private List<Page> pages;
 }

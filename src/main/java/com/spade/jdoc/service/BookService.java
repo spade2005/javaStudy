@@ -1,6 +1,8 @@
 package com.spade.jdoc.service;
 
 import com.spade.jdoc.model.Book;
+import com.spade.jdoc.model.Page;
+import com.spade.jdoc.model.PageType;
 import com.spade.jdoc.utils.SearchList;
 import com.spade.jdoc.utils.SearchMessage;
 import org.springframework.stereotype.Service;
@@ -95,6 +97,36 @@ public class BookService {
         em.persist(book);
         em.flush();
         return book;
+    }
+
+
+    // for frontend
+    public List<PageType> queryPageType(Book book) {
+        String sb = "select u from PageType u where u.userId=:userId and u.bookId=:bookId and u.deleted=0" +
+                " ORDER BY u.sortBy ASC";
+
+        var qb = em.createQuery(sb, PageType.class)
+                .setParameter("userId", book.getUserId())
+                .setParameter("bookId", book.getId());
+        try {
+            return qb.getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public List<Page> queryPage(Book book) {
+        String sb = "select u from Page u where u.userId=:userId and u.bookId=:bookId and u.deleted=0" +
+                " ORDER BY u.sortBy ASC";
+
+        var qb = em.createQuery(sb, Page.class)
+                .setParameter("userId", book.getUserId())
+                .setParameter("bookId", book.getId());
+        try {
+            return qb.getResultList();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 
