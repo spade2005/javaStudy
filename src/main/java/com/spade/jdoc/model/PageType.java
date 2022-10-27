@@ -28,6 +28,8 @@ public class PageType implements Serializable {
     private Integer userId;
     @Column(nullable = false, name = "parent_id")
     private Integer parentId;
+    @Column(nullable = false, name = "book_id")
+    private Integer bookId;
 
     @Column(nullable = false, name = "create_at")
     @JsonIgnore

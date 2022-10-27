@@ -4,10 +4,11 @@ package com.spade.jdoc.controller;
 import com.spade.jdoc.model.PageType;
 import com.spade.jdoc.model.User;
 import com.spade.jdoc.model.form.IdMap;
+import com.spade.jdoc.service.BookService;
 import com.spade.jdoc.service.PageTypeService;
 import com.spade.jdoc.utils.CommonUtils;
 import com.spade.jdoc.utils.ReturnMessage;
-import com.spade.jdoc.utils.SearchMessage;
+import com.spade.jdoc.utils.SearchPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,10 +24,12 @@ public class PageTypeController {
 
     @Resource
     private PageTypeService pageTypeService;
+    @Resource
+    private BookService bookService;
 
     @GetMapping(value = "/list")
     @Operation(summary = "list", description = "pageType列表", security = {@SecurityRequirement(name = "token")})
-    public ReturnMessage list(SearchMessage searchMessage) {
+    public ReturnMessage list(SearchPage searchMessage) {
         var user = (User) CommonUtils.cacheMap.get("user");
         searchMessage.setUser(user);
         var searchList = pageTypeService.findAll(searchMessage);
@@ -45,7 +48,7 @@ public class PageTypeController {
             return ReturnMessage.error("data not found");
         }
         if (!user.getId().equals(newtmp.getUserId())) {
-            return ReturnMessage.error("this data not found");
+            return ReturnMessage.error("not allow todo");
         }
         return ReturnMessage.success()
                 .setData("page_type", newtmp);
@@ -55,6 +58,10 @@ public class PageTypeController {
     @Operation(summary = "create", description = "create pageType", security = {@SecurityRequirement(name = "token")})
     public ReturnMessage create(@RequestBody PageType pageType) {
         var user = (User) CommonUtils.cacheMap.get("user");
+        var book = bookService.findById(pageType.getBookId());
+        if (book == null || user.getId().equals(book.getUserId())) {
+            return ReturnMessage.error("not allow todo");
+        }
         Long time = CommonUtils.getTime();
         pageType.setId(null);
         pageType.setCreateAt(time);

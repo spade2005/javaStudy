@@ -2,7 +2,7 @@ package com.spade.jdoc.service;
 
 import com.spade.jdoc.model.PageType;
 import com.spade.jdoc.utils.SearchList;
-import com.spade.jdoc.utils.SearchMessage;
+import com.spade.jdoc.utils.SearchPage;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -22,23 +22,24 @@ public class PageTypeService {
         return em.find(PageType.class, id);
     }
 
-    public SearchList<PageType> findAll(SearchMessage searchMessage) {
+    public SearchList<PageType> findAll(SearchPage searchMessage) {
         SearchList<PageType> searchList = new SearchList<>();
         searchList.setList(findList(searchMessage));
         searchList.setCount(findTotal(searchMessage));
         return searchList;
     }
 
-    public List<PageType> findList(SearchMessage searchMessage) {
+    public List<PageType> findList(SearchPage searchMessage) {
         StringBuilder sb = new StringBuilder();
         sb.append("select u from PageType u where u.userId=:userId and u.deleted=0");
+        sb.append(" AND u.bookId=:bookId");
         String keyword = searchMessage.getData().get("keyword");
         if (keyword != null && !keyword.isEmpty()) {
             sb.append(" AND u.name=:name");
         }
         if (searchMessage.getSortData().size() > 0) {
             sb.append(" ORDER BY");
-            for (Map.Entry<String,String> entry : searchMessage.getSortData().entrySet()) {
+            for (Map.Entry<String, String> entry : searchMessage.getSortData().entrySet()) {
                 sb.append(" ").append(entry.getKey())
                         .append(" ").append(entry.getValue());
             }
@@ -50,6 +51,7 @@ public class PageTypeService {
                 .setParameter("userId", searchMessage.getUser().getId())
                 .setMaxResults(searchMessage.getLength())
                 .setFirstResult(searchMessage.getStart());
+        qb.setParameter("bookId",searchMessage.getBookId());
         if (keyword != null && !keyword.isEmpty()) {
             qb.setParameter("name", keyword);
         }
@@ -60,9 +62,10 @@ public class PageTypeService {
         }
     }
 
-    public Long findTotal(SearchMessage searchMessage) {
+    public Long findTotal(SearchPage searchMessage) {
         StringBuilder sb = new StringBuilder();
         sb.append("select count(u) from PageType u where u.userId=:userId and u.deleted=0");
+        sb.append(" AND u.bookId=:bookId");
         String keyword = searchMessage.getData().get("keyword");
         if (keyword != null && !keyword.isEmpty()) {
             sb.append(" AND u.name=:name");
@@ -70,6 +73,7 @@ public class PageTypeService {
         var qb = em.createQuery(sb.toString(), Long.class)
                 .setParameter("userId", searchMessage.getUser().getId())
                 .setMaxResults(1);
+        qb.setParameter("bookId",searchMessage.getBookId());
         if (keyword != null && !keyword.isEmpty()) {
             qb.setParameter("name", keyword);
         }

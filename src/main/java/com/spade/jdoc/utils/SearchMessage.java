@@ -9,8 +9,6 @@ import java.util.Map;
 @Data
 public class SearchMessage {
 
-//    private int id;
-
     private int start = 0;//起始
     private int length = 10;//长度
     @JsonIgnore
