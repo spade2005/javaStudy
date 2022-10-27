@@ -34,8 +34,8 @@ public class PageType implements Serializable {
     @Column(nullable = false, name = "create_at")
     @JsonIgnore
     private Long createAt;
-    @Column(nullable = false, name = "update_at")
 
+    @Column(nullable = false, name = "update_at")
     @JsonIgnore
     private Long updateAt;
     @JsonIgnore

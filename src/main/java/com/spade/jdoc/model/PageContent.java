@@ -1,5 +1,6 @@
 package com.spade.jdoc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,12 +17,18 @@ public class PageContent implements Serializable {
 
     @Column(nullable = false, name = "page_id")
     private Integer pageId;
-    private Integer content;
+
+    private String content;
+
+    @Column(nullable = false, name = "hash_code")
+    private String hashCode;
+
     private Integer type;//1正式 2草稿 3历史
 
     @Column(nullable = false, name = "create_at")
+    @JsonIgnore
     private Long createAt;
-    @Column(nullable = false, name = "update_at")
-    private Long updateAt;
+
+    @JsonIgnore
     private Integer deleted;
 }
