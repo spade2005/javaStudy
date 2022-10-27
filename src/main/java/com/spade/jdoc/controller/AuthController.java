@@ -70,6 +70,7 @@ public class AuthController {
         user.setCreateAt(time);
         user.setUpdateAt(time);
         user.setRoleId(1);
+        user.setDeleted(0);
 //        System.out.println(user.toString());
         userService.createUser(user);
         return ReturnMessage.success();

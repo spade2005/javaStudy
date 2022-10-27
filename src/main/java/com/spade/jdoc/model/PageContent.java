@@ -18,6 +18,8 @@ public class PageContent implements Serializable {
     @Column(nullable = false, name = "page_id")
     private Integer pageId;
 
+    @Lob
+    @Column(columnDefinition = "text")
     private String content;
 
     @Column(nullable = false, name = "hash_code")

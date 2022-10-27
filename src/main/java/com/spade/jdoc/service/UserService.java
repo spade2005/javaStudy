@@ -3,11 +3,14 @@ package com.spade.jdoc.service;
 import com.spade.jdoc.model.User;
 import com.spade.jdoc.model.UserToken;
 import com.spade.jdoc.utils.CommonUtils;
+import com.spade.jdoc.utils.SearchList;
+import com.spade.jdoc.utils.SearchMessage;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -31,6 +34,63 @@ public class UserService {
 
     public User findById(int id) {
         return em.find(User.class, id, Map.of("deleted", 111111,"status",1));
+    }
+
+
+    public SearchList<User> findAll(SearchMessage searchMessage) {
+        SearchList<User> searchList = new SearchList<>();
+        searchList.setList(findList(searchMessage));
+        searchList.setCount(findTotal(searchMessage));
+        return searchList;
+    }
+
+    public List<User> findList(SearchMessage searchMessage) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select u from User u where u.deleted=0");
+        String keyword = searchMessage.getData().get("keyword");
+        if (keyword != null && !keyword.isEmpty()) {
+            sb.append(" AND u.username=:username");
+        }
+        if (searchMessage.getSortData().size() > 0) {
+            sb.append(" ORDER BY");
+            for (Map.Entry<String, String> entry : searchMessage.getSortData().entrySet()) {
+                sb.append(" ").append(entry.getKey())
+                        .append(" ").append(entry.getValue());
+            }
+        } else {
+            sb.append(" ORDER BY id DESC");
+        }
+
+        var qb = em.createQuery(sb.toString(), User.class)
+                .setMaxResults(searchMessage.getLength())
+                .setFirstResult(searchMessage.getStart());
+        if (keyword != null && !keyword.isEmpty()) {
+            qb.setParameter("username", keyword);
+        }
+        try {
+            return qb.getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public Long findTotal(SearchMessage searchMessage) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("select count(u) from User u where u.deleted=0");
+        String keyword = searchMessage.getData().get("keyword");
+        if (keyword != null && !keyword.isEmpty()) {
+            sb.append(" AND u.username=:username");
+        }
+        var qb = em.createQuery(sb.toString(), Long.class)
+                .setMaxResults(1);
+        if (keyword != null && !keyword.isEmpty()) {
+            qb.setParameter("username", keyword);
+        }
+        try {
+            return qb.getSingleResult();
+        } catch (Exception e) {
+            return 0L;
+        }
     }
 
     @Transactional

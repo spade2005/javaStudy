@@ -97,39 +97,31 @@ public class PageService {
 
     @Transactional
     public Page save(Page page) {
-        var tx = em.getTransaction();
-        tx.begin();
-        try {
-            em.persist(page);
+        em.persist(page);
 
-            String hashCode = String.valueOf(page.getContent().hashCode());
-            boolean insertNew = false;
-            var newtmp = findLastPageContent(page.getId());
-            if (newtmp == null) {
+        String hashCode = String.valueOf(page.getContent().hashCode());
+        boolean insertNew = false;
+        var newtmp = findLastPageContent(page.getId());
+        if (newtmp == null) {
+            insertNew = true;
+        } else {
+            if (!newtmp.getHashCode().equals(hashCode)) {
                 insertNew = true;
-            } else {
-                if (newtmp.getHashCode().equals(hashCode)) {
-                    insertNew = true;
-                    newtmp.setType(3);
-                    em.persist(newtmp);
-                }
+                newtmp.setType(3);
+                em.persist(newtmp);
             }
-            if (insertNew) {
-                PageContent pageContent = new PageContent();
-                pageContent.setPageId(page.getId());
-                pageContent.setContent(page.getContent());
-                pageContent.setHashCode(hashCode);
-                pageContent.setType(1);
-                pageContent.setCreateAt(page.getUpdateAt());
-                pageContent.setDeleted(0);
-                em.persist(page);
-            }
-            em.flush();
-            tx.commit();
-        } catch (Exception e) {
-            tx.rollback();
-            throw e;
         }
+        if (insertNew) {
+            PageContent pageContent = new PageContent();
+            pageContent.setPageId(page.getId());
+            pageContent.setContent(page.getContent());
+            pageContent.setHashCode(hashCode);
+            pageContent.setType(1);
+            pageContent.setCreateAt(page.getUpdateAt());
+            pageContent.setDeleted(0);
+            em.persist(pageContent);
+        }
+        em.flush();
         return page;
     }
 

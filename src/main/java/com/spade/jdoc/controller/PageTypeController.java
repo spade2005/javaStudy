@@ -59,7 +59,7 @@ public class PageTypeController {
     public ReturnMessage create(@RequestBody PageType pageType) {
         var user = (User) CommonUtils.cacheMap.get("user");
         var book = bookService.findById(pageType.getBookId());
-        if (book == null || user.getId().equals(book.getUserId())) {
+        if (book == null || !user.getId().equals(book.getUserId())) {
             return ReturnMessage.error("not allow todo");
         }
         Long time = CommonUtils.getTime();

@@ -63,7 +63,7 @@ public class PageController {
     public ReturnMessage create(@RequestBody Page page) {
         var user = (User) CommonUtils.cacheMap.get("user");
         var book = bookService.findById(page.getBookId());
-        if (book == null || user.getId().equals(book.getUserId())) {
+        if (book == null || !user.getId().equals(book.getUserId())) {
             return ReturnMessage.error("not allow todo");
         }
         Long time = CommonUtils.getTime();
@@ -96,6 +96,7 @@ public class PageController {
         newtmp.setTitle(page.getTitle());
         newtmp.setTypeId(page.getTypeId());
         newtmp.setSortBy(page.getSortBy());
+        newtmp.setContent(page.getContent());
         pageService.update(newtmp);
         return ReturnMessage.success();
     }

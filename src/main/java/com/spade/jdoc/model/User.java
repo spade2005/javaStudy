@@ -14,7 +14,6 @@ public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer id;
 
     @Column(nullable = false, length = 50)
@@ -29,7 +28,7 @@ public class User implements Serializable {
     @Column(nullable = false, length = 20, name = "nick_name")
     private String nickName;
     @Column(nullable = false, name = "role_id")
-    private Integer roleId;
+    private Integer roleId;// 1 normal ,2 super
     @Column(nullable = false)
     private Integer status;//0正常1禁用
 
@@ -42,5 +41,12 @@ public class User implements Serializable {
 
     @JsonIgnore
     @Column(nullable = false)
-    private Integer deleted=0;
+    private Integer deleted = 0;
+
+    public boolean checkSuper() {
+        if (getRoleId().equals(2)) {
+            return true;
+        }
+        return false;
+    }
 }
