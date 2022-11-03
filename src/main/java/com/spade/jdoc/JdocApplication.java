@@ -10,10 +10,8 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 
-@CrossOrigin(origins = {"http://localhost:9000", "http://localhost:3000"})
 @SpringBootApplication
 public class JdocApplication {
 
