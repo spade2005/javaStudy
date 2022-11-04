@@ -49,8 +49,12 @@ public class AuthController {
 //            @Parameter(name = "request", description = "请求request", in = ParameterIn.HEADER)
 //    })
     public ReturnMessage logout(HttpServletRequest request) {
-        String token = request.getHeader("token");
-        var userToken = userService.findToken(token);
+        String token = request.getHeader("Authorization");
+        if (token==null || token.isEmpty() || !token.substring(0, 7).trim().equals("Bearer")) {
+            return ReturnMessage.success();
+        }
+        String tokenStr = token.substring(7);
+        var userToken = userService.findToken(tokenStr);
         userService.removeToken(userToken);
         return ReturnMessage.success();
     }

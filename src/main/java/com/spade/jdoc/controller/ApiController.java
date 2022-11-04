@@ -65,4 +65,29 @@ public class ApiController {
     }
 
 
+    @GetMapping(value = "/item-type")
+    @Operation(summary = "item-type", description = "返回book下all pageType", security = {@SecurityRequirement(name = "token")})
+    public ReturnMessage itemType(Integer id) {
+        var book = bookService.findById(id);
+        if (book == null || !book.getDeleted().equals(0)) {
+            return ReturnMessage.error("data not found");
+        }
+        var user = (User) CommonUtils.cacheMap.get("user");
+        if (!user.getId().equals(book.getUserId())) {
+            return ReturnMessage.error("this operation not allow");
+        }
+        var listPageType = bookService.queryPageType(book);
+        var item = new ArrayList<PageType>();
+        var child = new ArrayList<PageType>();
+        for (PageType pageType : listPageType) {
+            if (pageType.getParentId().equals(0)) {
+                item.add(pageType);
+            } else {
+                child.add(pageType);
+            }
+        }
+        return ReturnMessage.success().setData("item", item).setData("child", child);
+    }
+
+
 }

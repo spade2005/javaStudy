@@ -43,6 +43,7 @@ public class PageType implements Serializable {
     private Integer deleted;
 
     @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Page> listPage;
 
 }

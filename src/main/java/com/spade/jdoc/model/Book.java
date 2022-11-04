@@ -22,15 +22,17 @@ public class Book implements Serializable {
 
     @Column(nullable = false)
     private String mark;
+
     @Column(nullable = false, name = "sort_by")
     private Integer sortBy;
+
     @Column(nullable = false, name = "user_id")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer userId;
+
     private Integer type;// 1 ,2 need pass
 
     @Column(nullable = false, length = 50)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String visitPass;
 
     @Column(nullable = false, name = "create_at")
@@ -40,12 +42,15 @@ public class Book implements Serializable {
     @Column(nullable = false, name = "update_at")
     @JsonIgnore
     private Long updateAt;
+
     @JsonIgnore
     private Integer deleted;
 
     @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<PageType> pageTypes;
 
     @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Page> pages;
 }

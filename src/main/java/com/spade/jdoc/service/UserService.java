@@ -33,7 +33,7 @@ public class UserService {
     }
 
     public User findById(int id) {
-        return em.find(User.class, id, Map.of("deleted", 111111,"status",1));
+        return em.find(User.class, id);
     }
 
 

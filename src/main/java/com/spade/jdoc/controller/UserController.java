@@ -116,4 +116,39 @@ public class UserController {
     }
 
 
+    @PostMapping(value = "/save")
+    @Operation(summary = "save", description = "save current user", security = {@SecurityRequirement(name = "token")})
+    public ReturnMessage save(@RequestBody User user) {
+        var currentUser = (User) CommonUtils.cacheMap.get("user");
+        var newtmp = userService.findById(currentUser.getId());
+        if (newtmp == null || !newtmp.getDeleted().equals(0)) {
+            return ReturnMessage.error("data not found");
+        }
+        if (!user.getPasswordHash().isEmpty()) {
+            newtmp.setPasswordHash(CommonUtils.passwordHash(user.getPasswordHash()));
+        }
+        newtmp.setUpdateAt(CommonUtils.getTime());
+        newtmp.setPhone(user.getPhone());
+        newtmp.setEmail(user.getEmail());
+        newtmp.setNickName(user.getNickName());
+        userService.createUser(newtmp);
+        return ReturnMessage.success();
+    }
+
+
+    @GetMapping(value = "/info")
+    @Operation(summary = "info", description = "获取当前user", security = {@SecurityRequirement(name = "token")})
+    public ReturnMessage info() {
+        var currentUser = (User) CommonUtils.cacheMap.get("user");
+        if (!currentUser.checkSuper()) {
+            return ReturnMessage.error("data not allow");
+        }
+        var user = userService.findById(currentUser.getId());
+        if (user == null || !user.getDeleted().equals(0)) {
+            return ReturnMessage.error("data not found");
+        }
+        return ReturnMessage.success()
+                .setData("user", user);
+    }
+
 }
