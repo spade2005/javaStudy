@@ -116,7 +116,7 @@ public class PageController {
         Long time = CommonUtils.getTime();
         newtmp.setUpdateAt(time);
         newtmp.setDeleted(1);
-        pageService.update(newtmp);
+        pageService.delete(newtmp);
         return ReturnMessage.success();
     }
 

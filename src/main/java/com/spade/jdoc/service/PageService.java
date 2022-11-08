@@ -137,5 +137,17 @@ public class PageService {
         }
     }
 
+    @Transactional
+    public Page delete(Page page) {
+        em.persist(page);
+        var newtmp = findLastPageContent(page.getId());
+        if (newtmp != null) {
+            newtmp.setDeleted(1);
+            em.persist(newtmp);
+        }
+        em.flush();
+        return page;
+    }
+
 
 }
