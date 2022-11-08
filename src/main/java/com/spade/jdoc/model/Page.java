@@ -34,7 +34,7 @@ public class Page implements Serializable {
     private Long createAt;
 
     @Column(nullable = false, name = "update_at")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long updateAt;
     @JsonIgnore
     private Integer deleted;

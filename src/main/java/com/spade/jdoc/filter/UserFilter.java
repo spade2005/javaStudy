@@ -95,7 +95,7 @@ public class UserFilter implements Filter {
         if (user == null || !user.getDeleted().equals(0) || !user.getStatus().equals(0)) {
             return null;
         }
-//        System.out.println("user=" + user.toString());
+        userService.addTokenTime(token);
         return user;
     }
 }

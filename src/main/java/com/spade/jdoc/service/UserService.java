@@ -169,6 +169,18 @@ public class UserService {
     }
 
     @Transactional
+    public UserToken addTokenTime(UserToken userToken) {
+        if (userToken == null || userToken.getId() <= 0) {
+            return null;
+        }
+        //gen str
+        userToken.setExpireAt(CommonUtils.getTime() + 3600);
+        em.merge(userToken);//非find方法，得用merge.
+        em.flush();
+        return userToken;
+    }
+
+    @Transactional
     public UserToken removeToken(UserToken userToken) {
         if (userToken == null) {
             return null;
