@@ -140,9 +140,9 @@ public class UserController {
     @Operation(summary = "info", description = "获取当前user", security = {@SecurityRequirement(name = "token")})
     public ReturnMessage info() {
         var currentUser = (User) CommonUtils.cacheMap.get("user");
-        if (!currentUser.checkSuper()) {
-            return ReturnMessage.error("data not allow");
-        }
+//        if (!currentUser.checkSuper()) {
+//            return ReturnMessage.error("data not allow");
+//        }
         var user = userService.findById(currentUser.getId());
         if (user == null || !user.getDeleted().equals(0)) {
             return ReturnMessage.error("data not found");
