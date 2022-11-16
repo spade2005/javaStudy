@@ -49,4 +49,15 @@ public class User implements Serializable {
         }
         return false;
     }
+
+    public User() {
+
+    }
+
+    public User(Integer id, String username, String nickName, String phone) {
+        this.id = id;
+        this.username = username;
+        this.nickName = nickName;
+        this.phone = phone;
+    }
 }

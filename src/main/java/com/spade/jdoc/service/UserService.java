@@ -193,4 +193,17 @@ public class UserService {
     }
 
 
+    public User findByTest(String username) {
+        String sql = "select new User (u.id,u.username,u.nickName,u.phone) from User u where u.username=:username and u.deleted=0";
+        var qb = em.createQuery(sql, User.class)
+                .setParameter("username", username)
+                .setMaxResults(1);
+        try {
+            return qb.getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
 }

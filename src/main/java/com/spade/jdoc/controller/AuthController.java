@@ -3,16 +3,22 @@ package com.spade.jdoc.controller;
 
 import com.spade.jdoc.model.form.LoginUser;
 import com.spade.jdoc.model.User;
+import com.spade.jdoc.repository.UserRepository;
 import com.spade.jdoc.service.UserService;
 import com.spade.jdoc.utils.CommonUtils;
 import com.spade.jdoc.utils.ErrorMessage;
 import com.spade.jdoc.utils.ReturnMessage;
 import io.swagger.v3.oas.annotations.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -21,6 +27,9 @@ public class AuthController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private UserRepository userRepository;
 
     @PostMapping(value = "/login")
     @Operation(summary = "login", description = "登录")
@@ -50,7 +59,7 @@ public class AuthController {
 //    })
     public ReturnMessage logout(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
-        if (token==null || token.isEmpty() || !token.substring(0, 7).trim().equals("Bearer")) {
+        if (token == null || token.isEmpty() || !token.substring(0, 7).trim().equals("Bearer")) {
             return ReturnMessage.success();
         }
         String tokenStr = token.substring(7);
@@ -78,6 +87,25 @@ public class AuthController {
 //        System.out.println(user.toString());
         userService.createUser(user);
         return ReturnMessage.success();
+    }
+
+    @GetMapping(value = "/test")
+    @Operation(summary = "test some thing", description = "for test", security = {@SecurityRequirement(name = "token")})
+    public ReturnMessage test() {
+//        var user = userService.findByTest("test1");
+        var user = userRepository.findByTest("test1");
+        List<Map> list = new ArrayList<Map>();
+        for (Map l : user) {
+            var keys = l.keySet();
+            var newmap = new HashMap<String, Object>();
+            for (var ss : keys) {
+                String s = ss.toString();
+                newmap.put(s.toLowerCase(), l.get(ss));
+            }
+            list.add(newmap);
+        }
+//        var user= Map.of("kk","vv");
+        return ReturnMessage.success().setData("user", list).setData("orgUser", user);
     }
 
 }
